@@ -1,38 +1,23 @@
 class Principal {
   constructor(){
-    //marte
-    this. marte = new Marte (width/2, 10, 200, 100);
-    // nave
-    this.crearNave();
-    //asteroides
-    this.crearAsteroides();  
     //IMAGENES
     this.load();
     //BOTONES
     this.crearBotones();
+    //JUEGO
+    this.crearjuego = new Juego();
+    //TECLAS
+    this.crearteclas();
+    
   }
+    
   crearBotones(){
     this.pantalla = 0;
     this.anchoBot = 140;
     this.altoBot = 500;
-    
     this.bot1 = new Boton(0, this.altoBot, this.anchoBot, this.altoBot/8);
     this.bot2 = new Boton(width-this.anchoBot, this.altoBot, this.anchoBot, this.altoBot/8);
-    this.bot3 = new Boton(0, this.altoBot, this.anchoBot, this.altoBot/8);
-    this.bot4 = new Boton(0, this.altoBot, this.anchoBot, this.altoBot/8);
-    this.bot5 = new Boton(0, this.altoBot, this.anchoBot, this.altoBot/8 );
-    this.bot6 = new Boton(0, this.altoBot, this.anchoBot, this.altoBot/8);
-    this.bot7 = new Boton(0, this.altoBot, this.anchoBot, this.altoBot/8);
-    this.bot8 = new Boton(0, this.altoBot, this.anchoBot, this.altoBot/8);
-  }
-   crearAsteroides(){
-    this.astero = [];
-    for(let i=0; i < 10; i++){
-      this.astero[i] = new Asteroides(10+i*50, 0, random(40, 30)); 
-    } 
-  } 
-  crearNave(){
-    this.cohete = new Cohete(width/8, 450, 50, 20);  
+    
   }
    dibujar() {
 
@@ -46,52 +31,35 @@ class Principal {
           text("Pantalla "+ this.pantalla, width/2, 100);
     } else if (this.pantalla===2) {
     image(this.imagenes[3], 0, 0, 600, 600);
-      this.bot3.dibujarBoton(2, 3, "Volver");
+      this.bot1.dibujarBoton(2, 3, "Volver");
           text("Pantalla "+ this.pantalla, width/2, 100);
     } else if (this.pantalla===3) {
          image(this.imagenes[4], 0, 0, 600, 600);
-       this.bot4.dibujarBoton(3, 4, "Volver");
+       this.bot1.dibujarBoton(3, 4, "Volver");
         text("Pantalla "+ this.pantalla, width/2, 100);
   } else if (this.pantalla===4) {
        image(this.imagenes[5], 0, 0, 600, 600);
-     this.bot5.dibujarBoton(4, 5, "Volver");
+     this.bot1.dibujarBoton(4, 5, "Volver");
       text("Pantalla "+ this.pantalla, width/2, 100);
   } else if (this.pantalla===5) {
-        background(0); 
-  for(let i=0; i < 10; i++){
-   if(this.chocan(this.cohete.cx, this.cohete.cy, this.cohete.cancho, this.astero[i].x, this.astero[i].y, this.astero[i].tam)){
-       background(255, 0, 0);
-    this.impacto = false;
-      } 
-  this.astero[i].dibujar();
- }
-  this.marte.dibujar();
-  this.cohete.dibujar();
-  this.DisparoAsteroides();
-  if(this.chocan(this.cohete.cx, this.cohete.cy, this.cohete.cancho, this.marte.Mx, this.marte.My, this.marte.tamaño)){
-    this.impacto = false; 
-    this.pantalla = 7;
-   }
+        background(0);
+        this.crearjuego.display();
   } else if (this.pantalla===6) {
-     this.bot7.dibujarBoton(6, 7, "Volver");
+     this.bot1.dibujarBoton(6, 7, "Volver");
+           text("GANASTE", 100, 100);
       text("Pantalla "+ this.pantalla, width/2, 100);
   } else if (this.pantalla===7) {
-          image(this.imagenes[6], 0, 0, 600, 600);
-     this.bot8.dibujarBoton(7, 0, "Volver");
-      this.reiniciarJuego(); 
-      text("GANASTE", 100, 100);
+      this.crearjuego.reiniciarJuego(); 
+    image(this.imagenes[6], 0, 0, 600, 600);
+     this.bot1.dibujarBoton(7, 0, "Volver");
       text("Pantalla "+ this.pantalla, width/2, 100);
   } 
  }
  
-  chocan(x, y, tam, cx, cy, ancho){ 
-  let impacto = dist(x, y, cx, cy); 
-  return impacto<tam/4+ancho/4;
-    }
-  LlegoaMarte(Mx, My, tamaño, cx, cy, ancho){ 
-  let llegamos = dist(Mx, My, cx, cy); 
-  return llegamos<tamaño/2+ancho/2;
-    }  
+ crearteclas(){
+    this.crearjuego.teclaPresionada(keyCode);
+ }
+ 
   load() {
     this.imagenes = [];
     for (let i = 0; i < 7; i++) {
@@ -124,32 +92,4 @@ class Principal {
       this.pantalla = this.bot8.prox;
     } 
   }
-    teclaPresionada(tecla){ // teclas del cohete y de la bala 
-    this.tec = tecla;
-    if(this.tec === LEFT_ARROW ){
-      this.cohete.moverIzquierda();
-    }else if(this.tec === RIGHT_ARROW){
-      this.cohete.moverDerecha();
-    }else if(this.tec === UP_ARROW){
-      this.cohete.moverArriba(); 
-     }else if(this.tec === DOWN_ARROW){
-      this.cohete.moverAbajo();  
-    }else if(this.tec === 32){
-      this.cohete.dispararBala();             
-    }
-  }
-   DisparoAsteroides(){  
-    if(this.cohete.haDisparadoBala){
-      for(let i=0; i <10; i++){
-        this.astero[i].haTocadoLaBala(this.cohete.bala);
-      } 
-    }
-  }
-   reiniciarJuego(){
-    this.cohete = [];
-     this.astero = [];
-      this.crearNave();
-       this.crearAsteroides();
-   }
-    
 }
